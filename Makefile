@@ -1,6 +1,6 @@
 PLUGIN_NAME = wave_maker
 
-HEADERS = wave_maker.h\
+HEADERS = wave-maker.h\
 			 /usr/local/lib/rtxi_includes/plotdialog.h\
 			 /usr/local/lib/rtxi_includes/basicplot.h\
 			 /usr/local/lib/rtxi_includes/scrollzoomer.h\
@@ -12,10 +12,10 @@ SOURCES = wave-maker.cpp\
 			 /usr/local/lib/rtxi_includes/basicplot.cpp\
 			 /usr/local/lib/rtxi_includes/scrollzoomer.cpp\
 			 /usr/local/lib/rtxi_includes/scrollbar.cpp\
-#			 moc_scrollbar.cpp\
-			 moc_scrollzoomer.cpp\
-			 moc_basicplot.cpp\
-			 moc_plotdialog.cpp
+			 /usr/local/lib/rtxi_includes/moc_plotdialog.cpp\
+			 /usr/local/lib/rtxi_includes/moc_basicplot.cpp\
+			 /usr/local/lib/rtxi_includes/moc_scrollzoomer.cpp\
+			 /usr/local/lib/rtxi_includes/moc_scrollbar.cpp\
 		
 LIBS = -lqwt
 

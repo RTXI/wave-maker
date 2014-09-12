@@ -136,7 +136,7 @@ void WaveMaker::loadFile() {
 	if (fd->exec() == QDialog::Accepted) {		
 		QStringList files = fd->selectedFiles();
 		if (!files.isEmpty()) fileName = files.takeFirst();
-//		fileName = fd->selectedFile();
+		
 		printf("Loading new file: %s\n", fileName.toStdString().data());
 		setComment("File Name", fileName);
 		wave.clear();
@@ -185,8 +185,7 @@ void WaveMaker::previewFile() {
 		time[i] = dt * i;
 		yData[i] = wave[i];
 	}
-	PlotDialog *preview = new PlotDialog(this, "Wave Maker Waveform", time, yData,
-	wave.size());
+	PlotDialog *preview = new PlotDialog(this, "Wave Maker Waveform", time, yData, wave.size());
 	
 	preview->show();
 }
