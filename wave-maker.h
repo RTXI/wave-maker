@@ -33,7 +33,6 @@ class WaveMaker : public DefaultGUIModel {
 		virtual ~WaveMaker(void);
 	
 		void execute(void);
-//		void createGUI(DefaultGUIModel::variable_t *, int);
 		void customizeGUI(void);
 			
 	protected:
