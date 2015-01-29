@@ -25,37 +25,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <basicplot.h>
 #include <QtGui>
 
-class WaveMaker : public DefaultGUIModel {
-	Q_OBJECT
-	
-	public:
-		WaveMaker(void);
-		virtual ~WaveMaker(void);
-	
-		void execute(void);
-		void customizeGUI(void);
-			
-	protected:
-		virtual void update(DefaultGUIModel::update_flags_t);
-	
-	private:
-	// inputs, states
-	
-		double dt;
-		QString filename;
-		size_t idx;
-		size_t loop;
-		size_t nloops;
-		std::vector<double> wave;
-		double length;
-		double gain;
-	
-		// WaveMaker functions
-		void initParameters();
-	
-	private slots:
-		// all custom slots
-		void loadFile();
-		void loadFile(QString);
-		void previewFile();	
+class WaveMaker : public DefaultGUIModel
+{
+    Q_OBJECT
+
+public:
+    WaveMaker(void);
+    virtual ~WaveMaker(void);
+
+    void execute(void);
+    void customizeGUI(void);
+
+protected:
+    virtual void update(DefaultGUIModel::update_flags_t);
+
+private:
+    // inputs, states
+
+    double dt;
+    QString filename;
+    size_t idx;
+    size_t loop;
+    size_t nloops;
+    std::vector<double> wave;
+    double length;
+    double gain;
+
+    // WaveMaker functions
+    void initParameters();
+
+private slots:
+    // all custom slots
+    void loadFile();
+    void loadFile(QString);
+    void previewFile();
 };
