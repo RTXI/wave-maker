@@ -21,8 +21,8 @@
  */
 
 #include <default_gui_model.h>
-#include "../include/plotdialog.h"
-#include "../include/basicplot.h"
+#include "include/plotdialog.h"
+#include "include/basicplot.h"
 #include <qfiledialog.h>
 
 class WaveMaker : public DefaultGUIModel
