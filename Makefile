@@ -1,21 +1,23 @@
 PLUGIN_NAME = wave_maker
 
+RTXI_INCLUDES = /usr/local/lib/rtxi_includes
+
 HEADERS = wave-maker.h\
-			 /usr/local/lib/rtxi_includes/plotdialog.h\
-			 /usr/local/lib/rtxi_includes/basicplot.h\
-			 /usr/local/lib/rtxi_includes/scrollzoomer.h\
-			 /usr/local/lib/rtxi_includes/scrollbar.h\
+			 $(RTXI_INCLUDES)/plotdialog.h\
+			 $(RTXI_INCLUDES)/basicplot.h\
+			 $(RTXI_INCLUDES)/scrollzoomer.h\
+			 $(RTXI_INCLUDES)/scrollbar.h\
 
 SOURCES = wave-maker.cpp\
           moc_wave-maker.cpp\
-			 /usr/local/lib/rtxi_includes/plotdialog.cpp\
-			 /usr/local/lib/rtxi_includes/basicplot.cpp\
-			 /usr/local/lib/rtxi_includes/scrollzoomer.cpp\
-			 /usr/local/lib/rtxi_includes/scrollbar.cpp\
-			 /usr/local/lib/rtxi_includes/moc_plotdialog.cpp\
-			 /usr/local/lib/rtxi_includes/moc_basicplot.cpp\
-			 /usr/local/lib/rtxi_includes/moc_scrollzoomer.cpp\
-			 /usr/local/lib/rtxi_includes/moc_scrollbar.cpp\
+			 $(RTXI_INCLUDES)/plotdialog.cpp\
+			 $(RTXI_INCLUDES)/basicplot.cpp\
+			 $(RTXI_INCLUDES)/scrollzoomer.cpp\
+			 $(RTXI_INCLUDES)/scrollbar.cpp\
+			 $(RTXI_INCLUDES)/moc_plotdialog.cpp\
+			 $(RTXI_INCLUDES)/moc_basicplot.cpp\
+			 $(RTXI_INCLUDES)/moc_scrollzoomer.cpp\
+			 $(RTXI_INCLUDES)/moc_scrollbar.cpp\
 		
 LIBS = -lqwt
 
