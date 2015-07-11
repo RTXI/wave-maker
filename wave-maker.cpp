@@ -113,11 +113,9 @@ void WaveMaker::update(DefaultGUIModel::update_flags_t flag)
         idx = 0;
         loop = 0;
         gain = 0;
-        printf("Protocol paused.\n");
         break;
 
     case UNPAUSE:
-        printf("Protocol started.\n");
         break;
 
     case PERIOD:
@@ -149,7 +147,6 @@ void WaveMaker::loadFile()
     if (fd->exec() == QDialog::Accepted) {
         QStringList files = fd->selectedFiles();
         if (!files.isEmpty()) fileName = files.takeFirst();
-        printf("Loading new file: %s\n", fileName.toStdString().data());
         setComment("File Name", fileName);
         wave.clear();
         QFile file(fileName);
@@ -170,10 +167,8 @@ void WaveMaker::loadFile()
 void WaveMaker::loadFile(QString fileName)
 {
     if (fileName == "No file loaded.") {
-        printf("File not loaded.\n");
         return;
     } else {
-        printf("Loading new file: %s\n", fileName.toStdString().data());
         wave.clear();
         QFile file(fileName);
         if (file.open(QIODevice::ReadOnly)) {
