@@ -23,7 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <default_gui_model.h>
 #include <plotdialog.h>
 #include <basicplot.h>
-#include <QtGui>
 
 class WaveMaker : public DefaultGUIModel
 {

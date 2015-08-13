@@ -15,3 +15,9 @@ This module loads data from an ASCII formatted file. It samples one value from t
 ####Parameters
 1. Loops : Number of times to repeat the waveform, looping back to the beginning
 2. Gain : Multiplicative gain to apply to the waveform values
+
+####States
+1. Length(s) : Length of trial, computed based on the real-time period in RTXI
+
+####Comment
+1. File Name : Name of ASCII input file  
