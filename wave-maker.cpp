@@ -113,7 +113,6 @@ void WaveMaker::update(DefaultGUIModel::update_flags_t flag)
 			output(0) = 0; // stop command in case pause occurs in the middle of command
 			idx = 0;
 			loop = 0;
-			gain = 0;
 			break;
 
 		case UNPAUSE:
