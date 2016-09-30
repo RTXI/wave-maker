@@ -16,7 +16,7 @@
 
 */
 
-#include <wave-maker.h>
+#include "wave-maker.h"
 #include <math.h>
 #include <time.h>
 #include <main_window.h>
