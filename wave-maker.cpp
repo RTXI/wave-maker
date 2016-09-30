@@ -47,8 +47,7 @@ static size_t num_vars = sizeof(vars) / sizeof(DefaultGUIModel::variable_t);
 
 WaveMaker::WaveMaker(void) : DefaultGUIModel("Wave Maker", ::vars, ::num_vars)
 {
-	setWhatsThis(
-			"<p><b>Wave Maker:</b><br>This module reads a single value from an ascii file and outputs it as a signal.</p>");
+	setWhatsThis("This module loads data from an ASCII formatted file. It samples one value from the the file on every time step and creates and generates an output signal. The module computes the time length of the waveform based on the current real-time period. This is an easy way to test your algorithms on pre-recorded data as if it were being acquired in real-time.");
 
 	initParameters();
 	DefaultGUIModel::createGUI(vars, num_vars);
