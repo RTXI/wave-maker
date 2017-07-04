@@ -7,7 +7,7 @@ HEADERS = wave-maker.h\
 SOURCES = wave-maker.cpp\
          moc_wave-maker.cpp
 		
-LIBS = -lqwt -lrtplot
+LIBS = -lrtplot
 
 ### Do not edit below this line ###
 
