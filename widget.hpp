@@ -33,42 +33,33 @@ enum PARAMETER : Widgets::Variable::Id
   // set parameter ids here
   LOOP = 0,
   LENGTH,
-  GAIN,
-  FILE_NAME
+  GAIN
 };
 
 inline std::vector<Widgets::Variable::Info> get_default_vars()
 {
-  return {{PARAMETER::LOOP,
-           "Loops",
-           "Number of Times to Loop Data From File",
-           Widgets::Variable::UINT_PARAMETER,
-           uint64_t {1}},
-          {PARAMETER::LENGTH,
-           "Length (s)",
-           "Length of Trial is Computed From the Real-Time Period",
-           Widgets::Variable::INT_PARAMETER,
-           int64_t {1}},
-          {PARAMETER::GAIN,
-           "Gain",
-           "Factor to Amplify the Signal",
-           Widgets::Variable::DOUBLE_PARAMETER,
-           1.0},
-          {PARAMETER::FILE_NAME,
-           "File Name",
-           "ASCII Input File",
-           Widgets::Variable::COMMENT,
-           std::string()}};
+  return {
+      {PARAMETER::LOOP,
+       "Loops",
+       "Number of Times to Loop Data From File",
+       Widgets::Variable::UINT_PARAMETER,
+       uint64_t {1}},
+      {PARAMETER::LENGTH,
+       "Length (s)",
+       "Length of Trial is Computed From the Real-Time Period",
+       Widgets::Variable::INT_PARAMETER,
+       int64_t {1}},
+      {PARAMETER::GAIN,
+       "Gain",
+       "Factor to Amplify the Signal",
+       Widgets::Variable::DOUBLE_PARAMETER,
+       1.0},
+  };
 }
 
 inline std::vector<IO::channel_t> get_default_channels()
 {
-  return {{"First Channel Output Name",
-           "First Channel Output Description",
-           IO::OUTPUT},
-          {"First Channel Input Name",
-           "First Channel Input Description",
-           IO::INPUT}};
+  return {{"Output", "Signal from File", IO::OUTPUT}};
 }
 
 class Panel : public Widgets::Panel
@@ -83,7 +74,8 @@ private slots:
   void loadFile(QString);
   void previewFile();
 
-  // Any functions and data related to the GUI are to be placed here
+private:
+  QString filename;
 };
 
 class Component : public Widgets::Component
@@ -94,23 +86,24 @@ public:
   void initParameters();
 
 private:
-  double dt;
-  QString filename;
+  void loadWave();
+  int64_t dt; // period in nanoseconds
   size_t idx;
   size_t loop;
-  size_t nloops;
+  uint64_t nloops;
   std::vector<double> wave;
-  double length;
+  int64_t length;
   double gain;
-
-  // Additional functionality needed for RealTime computation is to be placed
-  // here
 };
 
 class Plugin : public Widgets::Plugin
 {
 public:
   explicit Plugin(Event::Manager* ev_manager);
+  std::vector<double>& getWaveData(){ return wave_data; }
+
+private:
+  std::vector<double> wave_data;
 };
 
 }  // namespace wave_maker

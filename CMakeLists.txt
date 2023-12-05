@@ -42,7 +42,7 @@ add_library(
 
 # Consult library website for how to link them to your plugin using cmake
 target_link_libraries(wave-maker PUBLIC 
-    rtxi::rtxi rtxi::rtxidsp rtxi::rtxigen rtxi::rtxififo Qt5::Core Qt5::Gui Qt5::Widgets 
+    rtxi::rtxi rtxi::rtxidsp rtxi::rtxigen rtxi::rtxififo rtxi::rtxiplot Qt5::Core Qt5::Gui Qt5::Widgets 
     Boost::headers dl fmt::fmt qwt::qwt
 )
 
