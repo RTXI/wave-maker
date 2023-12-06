@@ -33,7 +33,8 @@ enum PARAMETER : Widgets::Variable::Id
   // set parameter ids here
   LOOP = 0,
   LENGTH,
-  GAIN
+  GAIN,
+  FILENAME
 };
 
 inline std::vector<Widgets::Variable::Info> get_default_vars()
@@ -54,6 +55,11 @@ inline std::vector<Widgets::Variable::Info> get_default_vars()
        "Factor to Amplify the Signal",
        Widgets::Variable::DOUBLE_PARAMETER,
        1.0},
+      {PARAMETER::FILENAME,
+       "file name",
+       "Name of the file containing the waveform",
+       Widgets::Variable::COMMENT,
+       std::string("")}
   };
 }
 
@@ -84,6 +90,7 @@ public:
   explicit Component(Widgets::Plugin* hplugin);
   void execute() override;
   void initParameters();
+  void updateParameters();
 
 private:
   void loadWave();

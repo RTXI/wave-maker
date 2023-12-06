@@ -54,6 +54,16 @@ wave_maker::Component::Component(Widgets::Plugin* hplugin)
 {
 }
 
+void wave_maker::Component::updateParameters()
+{
+  nloops = getValue<uint64_t>(PARAMETER::LOOP);
+  gain = getValue<double>(PARAMETER::GAIN);
+  length = (static_cast<int64_t>(wave.size()) * dt) / RT::OS::SECONDS_TO_NANOSECONDS;
+  // Let UI side know how long the trial is
+  setValue<int64_t>(PARAMETER::LENGTH, length);
+  idx = 0;
+}
+
 void wave_maker::Component::execute()
 {
   // This is the real-time function that will be called
@@ -68,17 +78,11 @@ void wave_maker::Component::execute()
       loop = idx / wave.size();
       break;
     case RT::State::INIT:
-      initParameters();
+      updateParameters();
       setState(RT::State::EXEC);
       break;
     case RT::State::MODIFY:
-      nloops = getValue<uint64_t>(PARAMETER::LOOP);
-      gain = getValue<double>(PARAMETER::GAIN);
-      length = (static_cast<int64_t>(wave.size()) * dt)
-          / RT::OS::SECONDS_TO_NANOSECONDS;
-      // Let UI side know how long the trial is
-      setValue<int64_t>(PARAMETER::LENGTH, length);
-      idx = 0;
+      updateParameters(); 
       loadWave();
       setState(RT::State::EXEC);
       break;
@@ -94,7 +98,7 @@ void wave_maker::Component::execute()
       // running, we need to let the UI side update wave
       // parameters i.e. create the vector before we can
       // load the wave data.
-      setState(RT::State::MODIFY);
+      setState(RT::State::PAUSE);
       break;
     default:
       break;
@@ -201,6 +205,7 @@ void wave_maker::Panel::previewFile()
   getRTXIEventManager()->postEvent(&get_period_event);
   auto dt = std::any_cast<int64_t>(get_period_event.getParam("period"));
   std::vector<double> wave;
+  filename = QString(getComment(PARAMETER::FILENAME));
   QFile file(filename);
   if (file.open(QIODevice::ReadOnly)) {
     QTextStream stream(&file);
