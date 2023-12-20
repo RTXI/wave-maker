@@ -80,7 +80,8 @@ void wave_maker::Component::execute()
     case RT::State::INIT:
       loadWave();
       updateParameters();
-      setState(RT::State::PAUSE);
+      wave.empty() ? setState(RT::State::PAUSE) :
+                     setState(RT::State::EXEC);
       break;
     case RT::State::MODIFY:
       updateParameters(); 
@@ -91,7 +92,9 @@ void wave_maker::Component::execute()
       writeoutput(0, 0);
       break;
     case RT::State::UNPAUSE:
-      setState(RT::State::EXEC);
+      // We can only run the plugin if there is data
+      wave.empty() ? setState(RT::State::PAUSE) :
+                     setState(RT::State::EXEC);
       break;
     case RT::State::PERIOD:
       dt = RT::OS::getPeriod();
