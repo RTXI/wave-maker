@@ -30,8 +30,8 @@ wave_maker::Plugin::Plugin(Event::Manager* ev_manager)
 }
 
 wave_maker::Panel::Panel(QMainWindow* main_window, Event::Manager* ev_manager)
-    : Widgets::Panel(
-        std::string(wave_maker::MODULE_NAME), main_window, ev_manager)
+    : Widgets::Panel(std::string(wave_maker::MODULE_NAME), main_window, ev_manager)
+    , filenameLineEdit(new QLineEdit)
 {
   setWhatsThis(
       "This module loads data from an ASCII formatted file. It samples one "
@@ -78,13 +78,14 @@ void wave_maker::Component::execute()
       loop = idx / wave.size();
       break;
     case RT::State::INIT:
+      loadWave();
       updateParameters();
-      setState(RT::State::EXEC);
+      setState(RT::State::PAUSE);
       break;
     case RT::State::MODIFY:
       updateParameters(); 
       loadWave();
-      setState(RT::State::EXEC);
+      setState(RT::State::PAUSE);
       break;
     case RT::State::PAUSE:
       writeoutput(0, 0);
@@ -130,6 +131,7 @@ void wave_maker::Component::loadWave()
   // plugin. It should be clear to the user that after this the 
   // wave data held by the plugin should be cleared before use.
   std::swap(wave, hplugin->getWaveData());
+  if(wave.empty()){ setState(RT::State::PAUSE); }
 }
 
 void wave_maker::Panel::customizeGUI()
@@ -137,12 +139,20 @@ void wave_maker::Panel::customizeGUI()
   // QGridLayout* customlayout = DefaultGUIModel::getLayout();
   auto* customlayout = dynamic_cast<QVBoxLayout*>(this->layout());
   auto* fileBox = new QGroupBox("File");
-  auto* fileBoxLayout = new QHBoxLayout;
+  auto* fileButtonLayout = new QHBoxLayout;
+  auto* filenameLayout = new QHBoxLayout;
+  auto* fileBoxLayout = new QVBoxLayout;
   fileBox->setLayout(fileBoxLayout);
+  filenameLayout->addWidget(new QLabel("Filename: "));
+  filenameLineEdit->setReadOnly(true);
+  filenameLineEdit->setText("No File Loaded");
+  filenameLayout->addWidget(filenameLineEdit);
+  fileBoxLayout->addLayout(filenameLayout);
   auto* loadBttn = new QPushButton("Load File");
-  fileBoxLayout->addWidget(loadBttn);
+  fileButtonLayout->addWidget(loadBttn);
   auto* previewBttn = new QPushButton("Preview File");
-  fileBoxLayout->addWidget(previewBttn);
+  fileButtonLayout->addWidget(previewBttn);
+  fileBoxLayout->addLayout(fileButtonLayout);
   QObject::connect(loadBttn, SIGNAL(clicked()), this, SLOT(loadFile()));
   QObject::connect(previewBttn, SIGNAL(clicked()), this, SLOT(previewFile()));
 
@@ -155,17 +165,16 @@ void wave_maker::Panel::loadFile()
   auto* fd = new QFileDialog(this, "Wave Maker Input File");
   fd->setFileMode(QFileDialog::AnyFile);
   fd->setViewMode(QFileDialog::Detail);
-  QString selected_fileName;
   int64_t length = 0;
   auto* hplugin = dynamic_cast<wave_maker::Plugin*>(getHostPlugin());
   std::vector<double>& wave = hplugin->getWaveData();
   if (fd->exec() == QDialog::Accepted) {
     QStringList files = fd->selectedFiles();
-    if (!files.isEmpty()) {
-      selected_fileName = files.takeFirst();
-    }
+    if (files.isEmpty()) { return; }
+    filename = files.takeFirst();
+    filenameLineEdit->setText(filename);
     wave.clear();
-    QFile file(selected_fileName);
+    QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
       QTextStream stream(&file);
       double value = NAN;
@@ -173,7 +182,6 @@ void wave_maker::Panel::loadFile()
         stream >> value;
         wave.push_back(value);
       }
-      filename = selected_fileName;
     }
     update_state(RT::State::MODIFY);
   }
@@ -205,7 +213,6 @@ void wave_maker::Panel::previewFile()
   getRTXIEventManager()->postEvent(&get_period_event);
   auto dt = std::any_cast<int64_t>(get_period_event.getParam("period"));
   std::vector<double> wave;
-  filename = QString(getComment(PARAMETER::FILENAME));
   QFile file(filename);
   if (file.open(QIODevice::ReadOnly)) {
     QTextStream stream(&file);

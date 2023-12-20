@@ -33,8 +33,7 @@ enum PARAMETER : Widgets::Variable::Id
   // set parameter ids here
   LOOP = 0,
   LENGTH,
-  GAIN,
-  FILENAME
+  GAIN
 };
 
 inline std::vector<Widgets::Variable::Info> get_default_vars()
@@ -54,12 +53,7 @@ inline std::vector<Widgets::Variable::Info> get_default_vars()
        "Gain",
        "Factor to Amplify the Signal",
        Widgets::Variable::DOUBLE_PARAMETER,
-       1.0},
-      {PARAMETER::FILENAME,
-       "file name",
-       "Name of the file containing the waveform",
-       Widgets::Variable::COMMENT,
-       std::string("")}
+       1.0}
   };
 }
 
@@ -82,6 +76,7 @@ private slots:
 
 private:
   QString filename;
+  QLineEdit* filenameLineEdit=nullptr;
 };
 
 class Component : public Widgets::Component
