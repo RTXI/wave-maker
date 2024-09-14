@@ -17,12 +17,18 @@
 
 */
 
+#include <QBoxLayout>
 #include <QFile>
 #include <QFileDialog>
+#include <QGroupBox>
+#include <QLabel>
+#include <QPushButton>
 #include <QTimer>
 #include <cmath>
 
 #include "widget.hpp"
+
+#include <rtxi/rtos.hpp>
 
 wave_maker::Plugin::Plugin(Event::Manager* ev_manager)
     : Widgets::Plugin(ev_manager, std::string(wave_maker::MODULE_NAME))
@@ -30,7 +36,8 @@ wave_maker::Plugin::Plugin(Event::Manager* ev_manager)
 }
 
 wave_maker::Panel::Panel(QMainWindow* main_window, Event::Manager* ev_manager)
-    : Widgets::Panel(std::string(wave_maker::MODULE_NAME), main_window, ev_manager)
+    : Widgets::Panel(
+          std::string(wave_maker::MODULE_NAME), main_window, ev_manager)
     , filenameLineEdit(new QLineEdit)
 {
   setWhatsThis(
@@ -58,7 +65,8 @@ void wave_maker::Component::updateParameters()
 {
   nloops = getValue<uint64_t>(PARAMETER::LOOP);
   gain = getValue<double>(PARAMETER::GAIN);
-  length = (static_cast<int64_t>(wave.size()) * dt) / RT::OS::SECONDS_TO_NANOSECONDS;
+  length =
+      (static_cast<int64_t>(wave.size()) * dt) / RT::OS::SECONDS_TO_NANOSECONDS;
   // Let UI side know how long the trial is
   setValue<int64_t>(PARAMETER::LENGTH, length);
   idx = 0;
@@ -80,11 +88,10 @@ void wave_maker::Component::execute()
     case RT::State::INIT:
       loadWave();
       updateParameters();
-      wave.empty() ? setState(RT::State::PAUSE) :
-                     setState(RT::State::EXEC);
+      wave.empty() ? setState(RT::State::PAUSE) : setState(RT::State::EXEC);
       break;
     case RT::State::MODIFY:
-      updateParameters(); 
+      updateParameters();
       loadWave();
       setState(RT::State::PAUSE);
       break;
@@ -93,8 +100,7 @@ void wave_maker::Component::execute()
       break;
     case RT::State::UNPAUSE:
       // We can only run the plugin if there is data
-      wave.empty() ? setState(RT::State::PAUSE) :
-                     setState(RT::State::EXEC);
+      wave.empty() ? setState(RT::State::PAUSE) : setState(RT::State::EXEC);
       break;
     case RT::State::PERIOD:
       dt = RT::OS::getPeriod();
@@ -131,10 +137,12 @@ void wave_maker::Component::loadWave()
 {
   auto* hplugin = dynamic_cast<wave_maker::Plugin*>(getHostPlugin());
   // NOTE: the following swap operation invalidates the data held by
-  // plugin. It should be clear to the user that after this the 
+  // plugin. It should be clear to the user that after this the
   // wave data held by the plugin should be cleared before use.
   std::swap(wave, hplugin->getWaveData());
-  if(wave.empty()){ setState(RT::State::PAUSE); }
+  if (wave.empty()) {
+    setState(RT::State::PAUSE);
+  }
 }
 
 void wave_maker::Panel::customizeGUI()
@@ -173,7 +181,9 @@ void wave_maker::Panel::loadFile()
   std::vector<double>& wave = hplugin->getWaveData();
   if (fd->exec() == QDialog::Accepted) {
     QStringList files = fd->selectedFiles();
-    if (files.isEmpty()) { return; }
+    if (files.isEmpty()) {
+      return;
+    }
     filename = files.takeFirst();
     filenameLineEdit->setText(filename);
     wave.clear();
@@ -228,11 +238,14 @@ void wave_maker::Panel::previewFile()
   std::vector<double> time(wave.size());
   std::vector<double> yData(wave.size());
   for (size_t i = 0; i < wave.size(); i++) {
-    time[i] = static_cast<double>(dt * i)/RT::OS::SECONDS_TO_NANOSECONDS;
+    time[i] = static_cast<double>(dt * i) / RT::OS::SECONDS_TO_NANOSECONDS;
     yData[i] = wave[i];
   }
-  auto* preview =
-      new PlotDialog(this, "Wave Maker Waveform", time.data(), yData.data(), static_cast<int>(wave.size()));
+  auto* preview = new PlotDialog(this,
+                                 "Wave Maker Waveform",
+                                 time.data(),
+                                 yData.data(),
+                                 static_cast<int>(wave.size()));
   preview->show();
 }
 
